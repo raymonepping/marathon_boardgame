@@ -93,6 +93,8 @@ export default function MarathonGame() {
 
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
+  }, [log]);
+
   // AI player logic
   useEffect(() => {
     const cp = players[currentPlayer];
@@ -114,8 +116,6 @@ export default function MarathonGame() {
       return () => clearTimeout(aiTimeout);
     }
   }, [phase, activeCard, currentPlayer]);
-
-  }, [log]);
 
   const addLog = (msg) => setLog(prev => [...prev, msg]);
 
