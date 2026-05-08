@@ -30,4 +30,8 @@ dist-ssr
 .env.development.local
 .env.test.local
 
+# Private chat data
+chats/
+*.txt
+
 # Made with Bob

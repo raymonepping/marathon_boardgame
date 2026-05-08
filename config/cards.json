@@ -181,6 +181,106 @@
       }
     },
     {
+      "id": "bad_10",
+      "type": "bad",
+      "title": "IT-band syndroom",
+      "description": "Klassieke loopblessure. Fysio nodig. Sla 2 beurten over.",
+      "emoji": "🦵",
+      "effect": {
+        "skipTurns": 2
+      }
+    },
+    {
+      "id": "bad_11",
+      "type": "bad",
+      "title": "Runner's knee",
+      "description": "Pijn onder de knie. Ga 4 vakjes terug voor herstel.",
+      "emoji": "😣",
+      "effect": {
+        "move": -4
+      }
+    },
+    {
+      "id": "bad_12",
+      "type": "bad",
+      "title": "Enkel vast",
+      "description": "Compensatie door slechte techniek. Ga 3 vakjes terug.",
+      "emoji": "🦶",
+      "effect": {
+        "move": -3
+      }
+    },
+    {
+      "id": "bad_13",
+      "type": "bad",
+      "title": "Slechte coaching",
+      "description": "Te zware training te vroeg. Dobbelsteenpunten gehalveerd (2 beurten).",
+      "emoji": "📉",
+      "effect": {
+        "halfDice": 2
+      }
+    },
+    {
+      "id": "bad_14",
+      "type": "bad",
+      "title": "Hooikoorts",
+      "description": "Voorjaarsmarathon problemen. Sla een beurt over.",
+      "emoji": "🤧",
+      "effect": {
+        "skipTurns": 1
+      }
+    },
+    {
+      "id": "good_10",
+      "type": "good",
+      "title": "Goede coach gevonden",
+      "description": "Persoonlijk schema op maat. Ga 4 vakjes vooruit.",
+      "emoji": "👨‍🏫",
+      "effect": {
+        "move": 4
+      }
+    },
+    {
+      "id": "good_11",
+      "type": "good",
+      "title": "Dry needling behandeling",
+      "description": "Fysio lost het op. Ga 3 vakjes vooruit.",
+      "emoji": "💉",
+      "effect": {
+        "move": 3
+      }
+    },
+    {
+      "id": "good_12",
+      "type": "good",
+      "title": "Looptechniek training",
+      "description": "Betere techniek = minder blessures. Ga 4 vakjes vooruit.",
+      "emoji": "🎯",
+      "effect": {
+        "move": 4
+      }
+    },
+    {
+      "id": "good_13",
+      "type": "good",
+      "title": "Krachttraining sessie",
+      "description": "Belastbaarheid omhoog! Ga 3 vakjes vooruit.",
+      "emoji": "💪",
+      "effect": {
+        "move": 3
+      }
+    },
+    {
+      "id": "good_14",
+      "type": "good",
+      "title": "Perfecte taper week",
+      "description": "Optimaal uitgerust. Gooi de dobbelsteen nog een keer.",
+      "emoji": "😌",
+      "effect": {
+        "extraRoll": true
+      }
+    },
+    {
       "id": "neutral_01",
       "type": "neutral",
       "title": "Rust is ook training",
@@ -194,6 +294,22 @@
       "title": "Regen maar toch gegaan",
       "description": "Mentale kracht! Geen bonus maar ook geen straf.",
       "emoji": "💪",
+      "effect": {}
+    },
+    {
+      "id": "neutral_03",
+      "type": "neutral",
+      "title": "Herstelweek ingelast",
+      "description": "Luisteren naar je lichaam. Geen vooruitgang maar ook geen achteruitgang.",
+      "emoji": "🛌",
+      "effect": {}
+    },
+    {
+      "id": "neutral_04",
+      "type": "neutral",
+      "title": "Cross-training op de fiets",
+      "description": "Alternatieve training. Geen effect op je positie.",
+      "emoji": "🚴",
       "effect": {}
     }
   ],
