@@ -422,11 +422,11 @@ export default function MarathonGame() {
                         position: "absolute",
                         top: 2,
                         left: 2,
-                        fontSize: isFinish ? "1.2em" : special ? "1em" : "1em",
+                        fontSize: isFinish ? "1.8em" : special ? "1.4em" : "1.2em",
                         fontWeight: 700,
-                        opacity: isFinish ? 1 : special ? 0.9 : 0.8,
+                        opacity: isFinish ? 1 : special ? 0.95 : 0.85,
                         color: "#ffffff",
-                        textShadow: "0 1px 3px rgba(0,0,0,0.5)"
+                        textShadow: "0 1px 4px rgba(0,0,0,0.6)"
                       }}>
                         {isFinish ? "🏆" : special ? special.label : sq}
                       </div>
@@ -496,7 +496,7 @@ export default function MarathonGame() {
                   boxShadow: i === currentPlayer ? `0 0 10px ${p.color}` : "none",
                   flexShrink: 0,
                 }} />
-                <span style={{ fontWeight: 700, fontSize: 13, color: p.color }}>{p.name}</span>
+                <span style={{ fontWeight: 700, fontSize: 13, color: "#ffffff", textShadow: `0 1px 3px ${p.color}` }}>{p.name}</span>
                 <div style={{ flex: 1 }} />
                 <div style={{
                   background: "rgba(255,255,255,0.1)",
