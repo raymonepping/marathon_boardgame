@@ -2,7 +2,7 @@
   "players": [
     {
       "id": 0,
-      "name": "Rood",
+      "name": "Barry",
       "color": "#E53E3E",
       "colorLight": "#FC8181",
       "colorDark": "#C53030",
@@ -13,7 +13,7 @@
     },
     {
       "id": 1,
-      "name": "Groen",
+      "name": "Kees",
       "color": "#38A169",
       "colorLight": "#68D391",
       "colorDark": "#276749",
@@ -24,7 +24,7 @@
     },
     {
       "id": 2,
-      "name": "Blauw",
+      "name": "Duncan",
       "color": "#3182CE",
       "colorLight": "#63B3ED",
       "colorDark": "#2C5282",
@@ -35,7 +35,7 @@
     },
     {
       "id": 3,
-      "name": "Geel",
+      "name": "Raymon",
       "color": "#D69E2E",
       "colorLight": "#F6AD55",
       "colorDark": "#B7791F",

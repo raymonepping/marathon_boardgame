@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
 const PLAYERS = [
-  { id: 0, name: "Rood", color: "#E53E3E", bg: "#FED7D7", emoji: "🔴" },
-  { id: 1, name: "Groen", color: "#38A169", bg: "#C6F6D5", emoji: "🟢" },
+  { id: 0, name: "Barry", color: "#E53E3E", bg: "#FED7D7", emoji: "🔴" },
+  { id: 1, name: "", color: "#38A169", bg: "#C6F6D5", emoji: "🟢" },
   { id: 2, name: "Blauw", color: "#3182CE", bg: "#BEE3F8", emoji: "🔵" },
   { id: 3, name: "Geel", color: "#D69E2E", bg: "#FEFCBF", emoji: "🟡" },
 ];
