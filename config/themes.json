@@ -1,0 +1,80 @@
+{
+  "themes": {
+    "dark": {
+      "id": "dark",
+      "name": "Donker (Standaard)",
+      "background": "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+      "textColor": "#f0ede8",
+      "boardBg": "rgba(255,255,255,0.05)",
+      "squareBg": "rgba(255,255,255,0.07)",
+      "squareBorder": "rgba(255,255,255,0.1)",
+      "panelBg": "rgba(255,255,255,0.06)",
+      "panelBorder": "rgba(255,255,255,0.1)",
+      "logBg": "rgba(0,0,0,0.3)",
+      "finishGradient": "linear-gradient(135deg, #f6d365, #fda085)",
+      "checkpointBg": "rgba(246, 211, 101, 0.25)",
+      "cardBg": "rgba(129, 230, 217, 0.18)"
+    },
+    "light": {
+      "id": "light",
+      "name": "Licht",
+      "background": "linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%)",
+      "textColor": "#1a202c",
+      "boardBg": "rgba(255,255,255,0.8)",
+      "squareBg": "rgba(255,255,255,0.9)",
+      "squareBorder": "rgba(0,0,0,0.1)",
+      "panelBg": "rgba(255,255,255,0.7)",
+      "panelBorder": "rgba(0,0,0,0.1)",
+      "logBg": "rgba(255,255,255,0.5)",
+      "finishGradient": "linear-gradient(135deg, #f6d365, #fda085)",
+      "checkpointBg": "rgba(246, 211, 101, 0.4)",
+      "cardBg": "rgba(129, 230, 217, 0.3)"
+    },
+    "ocean": {
+      "id": "ocean",
+      "name": "Oceaan",
+      "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "textColor": "#ffffff",
+      "boardBg": "rgba(255,255,255,0.1)",
+      "squareBg": "rgba(255,255,255,0.12)",
+      "squareBorder": "rgba(255,255,255,0.15)",
+      "panelBg": "rgba(255,255,255,0.08)",
+      "panelBorder": "rgba(255,255,255,0.12)",
+      "logBg": "rgba(0,0,0,0.2)",
+      "finishGradient": "linear-gradient(135deg, #f093fb, #f5576c)",
+      "checkpointBg": "rgba(240, 147, 251, 0.25)",
+      "cardBg": "rgba(129, 230, 217, 0.2)"
+    },
+    "forest": {
+      "id": "forest",
+      "name": "Bos",
+      "background": "linear-gradient(135deg, #134e5e 0%, #71b280 100%)",
+      "textColor": "#f0ede8",
+      "boardBg": "rgba(255,255,255,0.08)",
+      "squareBg": "rgba(255,255,255,0.1)",
+      "squareBorder": "rgba(255,255,255,0.12)",
+      "panelBg": "rgba(255,255,255,0.06)",
+      "panelBorder": "rgba(255,255,255,0.1)",
+      "logBg": "rgba(0,0,0,0.25)",
+      "finishGradient": "linear-gradient(135deg, #f6d365, #fda085)",
+      "checkpointBg": "rgba(113, 178, 128, 0.3)",
+      "cardBg": "rgba(129, 230, 217, 0.2)"
+    },
+    "sunset": {
+      "id": "sunset",
+      "name": "Zonsondergang",
+      "background": "linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%)",
+      "textColor": "#1a202c",
+      "boardBg": "rgba(255,255,255,0.15)",
+      "squareBg": "rgba(255,255,255,0.2)",
+      "squareBorder": "rgba(0,0,0,0.1)",
+      "panelBg": "rgba(255,255,255,0.12)",
+      "panelBorder": "rgba(0,0,0,0.08)",
+      "logBg": "rgba(255,255,255,0.3)",
+      "finishGradient": "linear-gradient(135deg, #f6d365, #fda085)",
+      "checkpointBg": "rgba(246, 211, 101, 0.35)",
+      "cardBg": "rgba(129, 230, 217, 0.25)"
+    }
+  },
+  "defaultTheme": "dark"
+}

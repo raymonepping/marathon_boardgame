@@ -1,0 +1,220 @@
+{
+  "cards": [
+    {
+      "id": "bad_01",
+      "type": "bad",
+      "title": "Door je enkel gegaan!",
+      "description": "Sla een beurt over.",
+      "emoji": "🤕",
+      "effect": {
+        "skipTurns": 1
+      }
+    },
+    {
+      "id": "bad_02",
+      "type": "bad",
+      "title": "Koorts 37.1°C",
+      "description": "Bouw opnieuw op. Dobbelsteenpunten worden gehalveerd (2 beurten).",
+      "emoji": "🤒",
+      "effect": {
+        "halfDice": 2
+      }
+    },
+    {
+      "id": "bad_03",
+      "type": "bad",
+      "title": "Spierpijn dag 2",
+      "description": "Ga 3 vakjes terug.",
+      "emoji": "😣",
+      "effect": {
+        "move": -3
+      }
+    },
+    {
+      "id": "bad_04",
+      "type": "bad",
+      "title": "Regen en storm!",
+      "description": "Training geannuleerd. Sla een beurt over.",
+      "emoji": "⛈️",
+      "effect": {
+        "skipTurns": 1
+      }
+    },
+    {
+      "id": "bad_05",
+      "type": "bad",
+      "title": "Verkeerd schoeisel",
+      "description": "Blaren! Ga 2 vakjes terug.",
+      "emoji": "👟",
+      "effect": {
+        "move": -2
+      }
+    },
+    {
+      "id": "bad_06",
+      "type": "bad",
+      "title": "Overtraining",
+      "description": "Rust verplicht. Sla 2 beurten over.",
+      "emoji": "😴",
+      "effect": {
+        "skipTurns": 2
+      }
+    },
+    {
+      "id": "bad_07",
+      "type": "bad",
+      "title": "Maagproblemen tijdens de loop",
+      "description": "Terug naar de start van het segment. Ga 5 vakjes terug.",
+      "emoji": "🤢",
+      "effect": {
+        "move": -5
+      }
+    },
+    {
+      "id": "bad_08",
+      "type": "bad",
+      "title": "Motivatiedip",
+      "description": "Je mist de training. Dobbelsteenpunten worden gehalveerd (1 beurt).",
+      "emoji": "😞",
+      "effect": {
+        "halfDice": 1
+      }
+    },
+    {
+      "id": "bad_09",
+      "type": "bad",
+      "title": "Kniepijn (IT-band)",
+      "description": "Fysio nodig. Sla 2 beurten over.",
+      "emoji": "🦵",
+      "effect": {
+        "skipTurns": 2
+      }
+    },
+    {
+      "id": "good_01",
+      "type": "good",
+      "title": "Perfect weer!",
+      "description": "Ideale omstandigheden. Beweeg 3 extra vakjes.",
+      "emoji": "☀️",
+      "effect": {
+        "move": 3
+      }
+    },
+    {
+      "id": "good_02",
+      "type": "good",
+      "title": "Runner's high!",
+      "description": "Geweldige training. Gooi de dobbelsteen nog een keer.",
+      "emoji": "🚀",
+      "effect": {
+        "extraRoll": true
+      }
+    },
+    {
+      "id": "good_03",
+      "type": "good",
+      "title": "Nieuw persoonlijk record",
+      "description": "Ga 4 vakjes vooruit.",
+      "emoji": "🏆",
+      "effect": {
+        "move": 4
+      }
+    },
+    {
+      "id": "good_04",
+      "type": "good",
+      "title": "Loopmaatje gevonden",
+      "description": "Motivatie door het dak. Gooi de dobbelsteen nog een keer.",
+      "emoji": "👥",
+      "effect": {
+        "extraRoll": true
+      }
+    },
+    {
+      "id": "good_05",
+      "type": "good",
+      "title": "Goed geslapen",
+      "description": "Optimaal herstel. Beweeg 2 extra vakjes.",
+      "emoji": "😴",
+      "effect": {
+        "move": 2
+      }
+    },
+    {
+      "id": "good_06",
+      "type": "good",
+      "title": "Sportvoeding gesponsord",
+      "description": "Energie boost! Ga 3 vakjes vooruit.",
+      "emoji": "🍌",
+      "effect": {
+        "move": 3
+      }
+    },
+    {
+      "id": "good_07",
+      "type": "good",
+      "title": "Intervaltraining voltooid",
+      "description": "Snelheidswerk loont. Ga 4 vakjes vooruit.",
+      "emoji": "⚡",
+      "effect": {
+        "move": 4
+      }
+    },
+    {
+      "id": "good_08",
+      "type": "good",
+      "title": "Hardloopkamp weekend",
+      "description": "Intensieve training. Ga 5 vakjes vooruit.",
+      "emoji": "🏕️",
+      "effect": {
+        "move": 5
+      }
+    },
+    {
+      "id": "good_09",
+      "type": "good",
+      "title": "Community run",
+      "description": "Samen ren je verder. Ga 3 vakjes vooruit.",
+      "emoji": "🏃‍♂️",
+      "effect": {
+        "move": 3
+      }
+    },
+    {
+      "id": "neutral_01",
+      "type": "neutral",
+      "title": "Rust is ook training",
+      "description": "Je slaat een training over maar herstelt goed. Niets verandert.",
+      "emoji": "🧘",
+      "effect": {}
+    },
+    {
+      "id": "neutral_02",
+      "type": "neutral",
+      "title": "Regen maar toch gegaan",
+      "description": "Mentale kracht! Geen bonus maar ook geen straf.",
+      "emoji": "💪",
+      "effect": {}
+    }
+  ],
+  "cardTypes": {
+    "bad": {
+      "name": "Tegenvaller",
+      "emoji": "😱",
+      "color": "#E53E3E",
+      "bgGradient": "linear-gradient(135deg, #2d1515, #4a1a1a)"
+    },
+    "good": {
+      "name": "Meevaller",
+      "emoji": "🎉",
+      "color": "#38A169",
+      "bgGradient": "linear-gradient(135deg, #152d15, #1a4a1a)"
+    },
+    "neutral": {
+      "name": "Neutraal",
+      "emoji": "😐",
+      "color": "#3182CE",
+      "bgGradient": "linear-gradient(135deg, #1a1a2d, #1a2d4a)"
+    }
+  }
+}

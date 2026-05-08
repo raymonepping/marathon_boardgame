@@ -1,0 +1,104 @@
+{
+  "players": [
+    {
+      "id": 0,
+      "name": "Rood",
+      "color": "#E53E3E",
+      "colorLight": "#FC8181",
+      "colorDark": "#C53030",
+      "bg": "#FED7D7",
+      "emoji": "🔴",
+      "isHuman": true,
+      "aiDifficulty": null
+    },
+    {
+      "id": 1,
+      "name": "Groen",
+      "color": "#38A169",
+      "colorLight": "#68D391",
+      "colorDark": "#276749",
+      "bg": "#C6F6D5",
+      "emoji": "🟢",
+      "isHuman": false,
+      "aiDifficulty": "easy"
+    },
+    {
+      "id": 2,
+      "name": "Blauw",
+      "color": "#3182CE",
+      "colorLight": "#63B3ED",
+      "colorDark": "#2C5282",
+      "bg": "#BEE3F8",
+      "emoji": "🔵",
+      "isHuman": false,
+      "aiDifficulty": "medium"
+    },
+    {
+      "id": 3,
+      "name": "Geel",
+      "color": "#D69E2E",
+      "colorLight": "#F6AD55",
+      "colorDark": "#B7791F",
+      "bg": "#FEFCBF",
+      "emoji": "🟡",
+      "isHuman": false,
+      "aiDifficulty": "hard"
+    }
+  ],
+  "aiPersonalities": {
+    "easy": {
+      "thinkingMessages": [
+        "Hmm, laat me even nadenken...",
+        "Wat zal ik doen?",
+        "Oké, hier gaan we...",
+        "Spannend!"
+      ],
+      "winMessages": [
+        "Wow, ik heb gewonnen!",
+        "Dat ging goed!",
+        "Yes! 🎉"
+      ],
+      "loseMessages": [
+        "Volgende keer beter!",
+        "Goed gespeeld!",
+        "Leuk spel!"
+      ]
+    },
+    "medium": {
+      "thinkingMessages": [
+        "Interessant...",
+        "Laten we dit strategisch aanpakken",
+        "Goed, volgende stap",
+        "Concentratie..."
+      ],
+      "winMessages": [
+        "Uitstekend!",
+        "Precies zoals gepland",
+        "Goed gespeeld allemaal"
+      ],
+      "loseMessages": [
+        "Goed gespeeld",
+        "Sterke tegenstander",
+        "Volgende keer"
+      ]
+    },
+    "hard": {
+      "thinkingMessages": [
+        "Calculerend...",
+        "Optimale zet bepalen",
+        "Strategie aanpassen",
+        "Analyseren..."
+      ],
+      "winMessages": [
+        "Zoals verwacht",
+        "Efficiënte overwinning",
+        "Goed spel"
+      ],
+      "loseMessages": [
+        "Interessante tactiek",
+        "Respect",
+        "Goed gespeeld"
+      ]
+    }
+  }
+}

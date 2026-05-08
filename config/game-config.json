@@ -1,0 +1,99 @@
+{
+  "game": {
+    "name": "Road to the Marathon",
+    "version": "2.0.0",
+    "totalSquares": 60,
+    "boardColumns": 10,
+    "startingPlayer": 0,
+    "maxPlayers": 4,
+    "minPlayers": 1
+  },
+  "board": {
+    "layout": "snake",
+    "specialSquares": {
+      "10": {
+        "type": "card",
+        "label": "📋",
+        "title": "Kaart vakje",
+        "description": "Trek een kaart"
+      },
+      "20": {
+        "type": "card",
+        "label": "📋",
+        "title": "Kaart vakje",
+        "description": "Trek een kaart"
+      },
+      "30": {
+        "type": "checkpoint",
+        "label": "🏁",
+        "title": "Checkpoint!",
+        "description": "+2 vakjes bonus!",
+        "bonus": 2
+      },
+      "40": {
+        "type": "card",
+        "label": "📋",
+        "title": "Kaart vakje",
+        "description": "Trek een kaart"
+      },
+      "50": {
+        "type": "card",
+        "label": "📋",
+        "title": "Kaart vakje",
+        "description": "Trek een kaart"
+      },
+      "55": {
+        "type": "checkpoint",
+        "label": "🏁",
+        "title": "Laatste push!",
+        "description": "+3 vakjes bonus!",
+        "bonus": 3
+      }
+    }
+  },
+  "dice": {
+    "sides": 6,
+    "animationDuration": 480,
+    "rollCount": 8
+  },
+  "ai": {
+    "enabled": true,
+    "thinkingTimeMin": 800,
+    "thinkingTimeMax": 2000,
+    "difficulties": {
+      "easy": {
+        "name": "Makkelijk",
+        "description": "Rustig tempo, maakt soms fouten",
+        "decisionDelay": 1500
+      },
+      "medium": {
+        "name": "Gemiddeld",
+        "description": "Standaard speler",
+        "decisionDelay": 1200
+      },
+      "hard": {
+        "name": "Moeilijk",
+        "description": "Snelle beslissingen, strategisch",
+        "decisionDelay": 900
+      }
+    }
+  },
+  "animations": {
+    "enabled": true,
+    "cardSlideIn": 300,
+    "diceRoll": 60,
+    "playerMove": 400,
+    "bounce": 1000
+  },
+  "sounds": {
+    "enabled": false,
+    "volume": 0.5,
+    "effects": {
+      "diceRoll": true,
+      "cardDraw": true,
+      "playerMove": true,
+      "checkpoint": true,
+      "win": true
+    }
+  }
+}

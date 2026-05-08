@@ -1,0 +1,30 @@
+{
+  "name": "marathon-boardgame",
+  "version": "2.0.0",
+  "description": "Road to the Marathon - Interactive board game with AI players",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "setup": "npm install && npm run dev"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.8"
+  },
+  "keywords": [
+    "game",
+    "board-game",
+    "marathon",
+    "react",
+    "ai",
+    "multiplayer"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
