@@ -1,45 +1,45 @@
 import { useState, useEffect, useRef } from "react";
+import cardsConfig from '@config/cards.json';
+import playersConfig from '@config/players.json';
+import gameConfig from '@config/game-config.json';
+import themesConfig from '@config/themes.json';
 
-const PLAYERS = [
-  { id: 0, name: "Rood", color: "#E53E3E", bg: "#FED7D7", emoji: "🔴", isAI: false },
-  { id: 1, name: "Groen", color: "#38A169", bg: "#C6F6D5", emoji: "🟢", isAI: true, aiDelay: 1500 },
-  { id: 2, name: "Blauw", color: "#3182CE", bg: "#BEE3F8", emoji: "🔵", isAI: true, aiDelay: 1200 },
-  { id: 3, name: "Geel", color: "#D69E2E", bg: "#FEFCBF", emoji: "🟡", isAI: true, aiDelay: 900 },
-];
+// Load from config files
+const PLAYERS = playersConfig.players.map(p => ({
+  id: p.id,
+  name: p.name,
+  color: p.color,
+  bg: p.bg,
+  emoji: p.emoji,
+  isAI: !p.isHuman,
+  aiDelay: p.isHuman ? 0 : (p.aiDifficulty === 'easy' ? 1500 : p.aiDifficulty === 'medium' ? 1200 : 900)
+}));
 
-const TOTAL_SQUARES = 60;
+const TOTAL_SQUARES = gameConfig.game.totalSquares;
 
-const CARDS = [
-  { type: "bad", title: "Door je enkel gegaan!", desc: "Sla een beurt over.", effect: { skipTurns: 1 } },
-  { type: "bad", title: "Koorts 37.1°C", desc: "Bouw opnieuw op. Dobbelsteenpunten worden gehalveerd (2 beurten).", effect: { halfDice: 2 } },
-  { type: "bad", title: "Spierpijn dag 2", desc: "Ga 3 vakjes terug.", effect: { move: -3 } },
-  { type: "bad", title: "Regen en storm!", desc: "Training geannuleerd. Sla een beurt over.", effect: { skipTurns: 1 } },
-  { type: "bad", title: "Verkeerd schoeisel", desc: "Blaren! Ga 2 vakjes terug.", effect: { move: -2 } },
-  { type: "bad", title: "Overtraining", desc: "Rust verplicht. Sla 2 beurten over.", effect: { skipTurns: 2 } },
-  { type: "bad", title: "Maagproblemen tijdens de loop", desc: "Terug naar de start van het segment. Ga 5 vakjes terug.", effect: { move: -5 } },
-  { type: "bad", title: "Motivatiedip", desc: "Je mist de training. Dobbelsteenpunten worden gehalveerd (1 beurt).", effect: { halfDice: 1 } },
-  { type: "bad", title: "Kniepijn (IT-band)", desc: "Fysio nodig. Sla 2 beurten over.", effect: { skipTurns: 2 } },
-  { type: "good", title: "Perfect weer!", desc: "Ideale omstandigheden. Beweeg 3 extra vakjes.", effect: { move: 3 } },
-  { type: "good", title: "Runner's high!", desc: "Geweldige training. Gooi de dobbelsteen nog een keer.", effect: { extraRoll: true } },
-  { type: "good", title: "Nieuw persoonlijk record", desc: "Ga 4 vakjes vooruit.", effect: { move: 4 } },
-  { type: "good", title: "Loopmaatje gevonden", desc: "Motivatie door het dak. Gooi de dobbelsteen nog een keer.", effect: { extraRoll: true } },
-  { type: "good", title: "Goed geslapen", desc: "Optimaal herstel. Beweeg 2 extra vakjes.", effect: { move: 2 } },
-  { type: "good", title: "Sportvoeding gesponsord", desc: "Energie boost! Ga 3 vakjes vooruit.", effect: { move: 3 } },
-  { type: "good", title: "Intervaltraining voltooid", desc: "Snelheidswerk loont. Ga 4 vakjes vooruit.", effect: { move: 4 } },
-  { type: "good", title: "Hardloopkamp weekend", desc: "Intensieve training. Ga 5 vakjes vooruit.", effect: { move: 5 } },
-  { type: "good", title: "Community run", desc: "Samen ren je verder. Ga 3 vakjes vooruit.", effect: { move: 3 } },
-  { type: "neutral", title: "Rust is ook training", desc: "Je slaat een training over maar herstelt goed. Niets verandert.", effect: {} },
-  { type: "neutral", title: "Regen maar toch gegaan", desc: "Mentale kracht! Geen bonus maar ook geen straf.", effect: {} },
-];
+const CARDS = cardsConfig.cards.map(c => ({
+  type: c.type,
+  title: c.title,
+  desc: c.description,
+  emoji: c.emoji,
+  effect: c.effect
+}));
 
-const SPECIAL_SQUARES = {
-  10: { type: "card", label: "📋" },
-  20: { type: "card", label: "📋" },
-  30: { type: "checkpoint", label: "🏁", title: "Checkpoint!", desc: "+2 vakjes bonus!" },
-  40: { type: "card", label: "📋" },
-  50: { type: "card", label: "📋" },
-  55: { type: "checkpoint", label: "🏁", title: "Laatste push!", desc: "+3 vakjes bonus!" },
-};
+const SPECIAL_SQUARES = Object.fromEntries(
+  Object.entries(gameConfig.board.specialSquares).map(([key, val]) => [
+    key,
+    {
+      type: val.type,
+      label: val.label,
+      title: val.title,
+      desc: val.description,
+      bonus: val.bonus
+    }
+  ])
+);
+
+// Get theme
+const currentTheme = themesConfig.themes[themesConfig.defaultTheme];
 
 function rollDie() {
   return Math.floor(Math.random() * 6) + 1;
@@ -280,9 +280,9 @@ export default function MarathonGame() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
-      fontFamily: "'Georgia', 'Times New Roman', serif",
-      color: "#f0ede8",
+      background: currentTheme.background,
+      fontFamily: "'Inter', 'Segoe UI', 'Roboto', sans-serif",
+      color: currentTheme.textColor,
       padding: "16px",
     }}>
       <style>{`
@@ -295,18 +295,27 @@ export default function MarathonGame() {
       `}</style>
 
       {/* Header */}
-      <div style={{ textAlign: "center", marginBottom: 16 }}>
-        <div style={{ fontSize: 13, letterSpacing: 4, color: "#a0aec0", textTransform: "uppercase", marginBottom: 4 }}>
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+        <div style={{
+          fontSize: 13,
+          letterSpacing: 4,
+          color: currentTheme.textColor,
+          opacity: 0.7,
+          textTransform: "uppercase",
+          marginBottom: 8,
+          fontWeight: 600
+        }}>
           Het ultieme hardloopspel
         </div>
         <h1 style={{
-          fontSize: "clamp(22px, 5vw, 38px)",
+          fontSize: "clamp(28px, 6vw, 48px)",
           fontWeight: 900,
           margin: 0,
-          background: "linear-gradient(90deg, #f6d365 0%, #fda085 100%)",
+          background: currentTheme.finishGradient,
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
-          letterSpacing: 2,
+          letterSpacing: 1,
+          textShadow: "0 2px 20px rgba(0,0,0,0.1)"
         }}>
           🏃 ROAD TO THE MARATHON 🏆
         </h1>
@@ -317,10 +326,11 @@ export default function MarathonGame() {
         {/* Board */}
         <div style={{ flex: "0 0 auto" }}>
           <div style={{
-            background: "rgba(255,255,255,0.05)",
-            borderRadius: 16,
-            padding: 10,
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: currentTheme.boardBg,
+            borderRadius: 20,
+            padding: 12,
+            border: `2px solid ${currentTheme.panelBorder}`,
+            boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
           }}>
             {squares.map((row, ri) => (
               <div key={ri} style={{ display: "flex", gap: 2, marginBottom: 2 }}>
@@ -330,28 +340,35 @@ export default function MarathonGame() {
                   const isFinish = sq === TOTAL_SQUARES;
                   return (
                     <div key={sq} style={{
-                      width: "clamp(36px, 5.5vw, 52px)",
-                      height: "clamp(36px, 5.5vw, 52px)",
+                      width: "clamp(38px, 5.5vw, 54px)",
+                      height: "clamp(38px, 5.5vw, 54px)",
                       background: isFinish
-                        ? "linear-gradient(135deg, #f6d365, #fda085)"
+                        ? currentTheme.finishGradient
                         : special?.type === "checkpoint"
-                          ? "rgba(246, 211, 101, 0.25)"
+                          ? currentTheme.checkpointBg
                           : special?.type === "card"
-                            ? "rgba(129, 230, 217, 0.18)"
+                            ? currentTheme.cardBg
                             : sq === 0
-                              ? "rgba(255,255,255,0.05)"
-                              : "rgba(255,255,255,0.07)",
-                      borderRadius: 6,
-                      border: isFinish ? "2px solid #f6d365" : special ? "1px solid rgba(255,255,255,0.25)" : "1px solid rgba(255,255,255,0.1)",
+                              ? currentTheme.boardBg
+                              : currentTheme.squareBg,
+                      borderRadius: 8,
+                      border: isFinish
+                        ? `3px solid ${currentTheme.accentColor}`
+                        : special
+                          ? `2px solid ${currentTheme.squareBorder}`
+                          : `1px solid ${currentTheme.squareBorder}`,
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
                       position: "relative",
                       fontSize: "clamp(7px, 1.2vw, 10px)",
-                      color: isFinish ? "#1a1a1a" : "rgba(255,255,255,0.5)",
+                      color: isFinish ? currentTheme.textColor : currentTheme.textColor,
+                      opacity: isFinish ? 1 : 0.8,
                       fontWeight: 600,
                       overflow: "hidden",
+                      transition: "all 0.2s ease",
+                      boxShadow: isFinish ? `0 0 20px ${currentTheme.accentColor}40` : "none",
                     }}>
                       <div style={{ position: "absolute", top: 2, left: 2, fontSize: "0.7em", opacity: 0.6 }}>
                         {isFinish ? "🏆" : special ? special.label : sq}
@@ -383,16 +400,25 @@ export default function MarathonGame() {
         </div>
 
         {/* Right panel */}
-        <div style={{ flex: "1 1 240px", maxWidth: 320, display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ flex: "1 1 240px", maxWidth: 320, display: "flex", flexDirection: "column", gap: 12 }}>
 
           {/* Players */}
           <div style={{
-            background: "rgba(255,255,255,0.06)",
-            borderRadius: 12,
-            padding: 10,
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: currentTheme.panelBg,
+            borderRadius: 16,
+            padding: 14,
+            border: `2px solid ${currentTheme.panelBorder}`,
+            boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
           }}>
-            <div style={{ fontSize: 11, letterSpacing: 2, opacity: 0.5, marginBottom: 8, textTransform: "uppercase" }}>Spelers</div>
+            <div style={{
+              fontSize: 12,
+              letterSpacing: 2,
+              opacity: 0.7,
+              marginBottom: 10,
+              textTransform: "uppercase",
+              fontWeight: 700,
+              color: currentTheme.accentColor
+            }}>Spelers</div>
             {players.map((p, i) => (
               <div key={p.id} style={{
                 display: "flex",
@@ -432,11 +458,12 @@ export default function MarathonGame() {
 
           {/* Dice & Action */}
           <div style={{
-            background: "rgba(255,255,255,0.06)",
-            borderRadius: 12,
-            padding: 14,
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: currentTheme.panelBg,
+            borderRadius: 16,
+            padding: 16,
+            border: `2px solid ${currentTheme.panelBorder}`,
             textAlign: "center",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
           }}>
             {phase !== "done" ? (
               <>
@@ -457,19 +484,23 @@ export default function MarathonGame() {
                 </div>
                 {phase === "roll" && (
                   <button onClick={handleRoll} disabled={rolling} style={{
-                    background: rolling ? "rgba(255,255,255,0.1)" : `linear-gradient(135deg, ${cp.color}, ${cp.color}cc)`,
-                    color: "white",
+                    background: rolling ? currentTheme.panelBg : currentTheme.buttonGradient,
+                    color: currentTheme.textColor,
                     border: "none",
-                    borderRadius: 10,
-                    padding: "10px 28px",
-                    fontSize: 14,
-                    fontWeight: 700,
+                    borderRadius: 12,
+                    padding: "12px 32px",
+                    fontSize: 15,
+                    fontWeight: 800,
                     cursor: rolling ? "not-allowed" : "pointer",
-                    boxShadow: rolling ? "none" : `0 4px 20px ${cp.color}66`,
-                    transition: "all 0.2s",
+                    boxShadow: rolling ? "none" : `0 6px 24px ${currentTheme.accentColor}40`,
+                    transition: "all 0.3s ease",
                     fontFamily: "inherit",
-                    letterSpacing: 1,
-                  }}>
+                    letterSpacing: 0.5,
+                    transform: rolling ? "scale(0.95)" : "scale(1)",
+                  }}
+                  onMouseEnter={(e) => !rolling && (e.target.style.background = currentTheme.buttonHover)}
+                  onMouseLeave={(e) => !rolling && (e.target.style.background = currentTheme.buttonGradient)}
+                  >
                     {rolling ? "Gooien..." : "🎲 Gooi!"}
                   </button>
                 )}
@@ -485,14 +516,22 @@ export default function MarathonGame() {
                 </div>
                 <div style={{ fontSize: 12, opacity: 0.6, marginBottom: 12 }}>🎉 De marathon is voltooid!</div>
                 <button onClick={resetGame} style={{
-                  background: "linear-gradient(135deg, #f6d365, #fda085)",
-                  color: "#1a1a1a",
-                  border: "none", borderRadius: 10,
-                  padding: "8px 20px", fontSize: 13,
-                  fontWeight: 700, cursor: "pointer",
+                  background: currentTheme.buttonGradient,
+                  color: currentTheme.textColor,
+                  border: "none",
+                  borderRadius: 12,
+                  padding: "12px 28px",
+                  fontSize: 14,
+                  fontWeight: 800,
+                  cursor: "pointer",
                   fontFamily: "inherit",
-                }}>
-                  Nieuw spel
+                  boxShadow: `0 6px 24px ${currentTheme.accentColor}40`,
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => e.target.style.background = currentTheme.buttonHover}
+                onMouseLeave={(e) => e.target.style.background = currentTheme.buttonGradient}
+                >
+                  🔄 Nieuw spel
                 </button>
               </div>
             )}
@@ -500,13 +539,22 @@ export default function MarathonGame() {
 
           {/* Log */}
           <div style={{
-            background: "rgba(0,0,0,0.3)",
-            borderRadius: 12,
-            padding: 10,
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: currentTheme.logBg,
+            borderRadius: 16,
+            padding: 14,
+            border: `2px solid ${currentTheme.panelBorder}`,
             flex: 1,
+            boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
           }}>
-            <div style={{ fontSize: 11, letterSpacing: 2, opacity: 0.5, marginBottom: 6, textTransform: "uppercase" }}>Logboek</div>
+            <div style={{
+              fontSize: 12,
+              letterSpacing: 2,
+              opacity: 0.7,
+              marginBottom: 8,
+              textTransform: "uppercase",
+              fontWeight: 700,
+              color: currentTheme.accentColor
+            }}>Logboek</div>
             <div ref={logRef} style={{
               maxHeight: 180,
               overflowY: "auto",
