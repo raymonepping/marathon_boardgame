@@ -1,8 +1,62 @@
 {
   "themes": {
+    "modern": {
+      "id": "modern",
+      "name": "Modern (Nieuw)",
+      "background": "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+      "textColor": "#ffffff",
+      "boardBg": "rgba(255,255,255,0.15)",
+      "squareBg": "rgba(255,255,255,0.2)",
+      "squareBorder": "rgba(255,255,255,0.3)",
+      "panelBg": "rgba(255,255,255,0.12)",
+      "panelBorder": "rgba(255,255,255,0.25)",
+      "logBg": "rgba(0,0,0,0.2)",
+      "finishGradient": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+      "checkpointBg": "rgba(240, 147, 251, 0.3)",
+      "cardBg": "rgba(102, 126, 234, 0.25)",
+      "accentColor": "#f093fb",
+      "buttonGradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "buttonHover": "linear-gradient(135deg, #7c8ef5 0%, #8b5bb8 100%)"
+    },
+    "vibrant": {
+      "id": "vibrant",
+      "name": "Levendig",
+      "background": "linear-gradient(135deg, #FA8BFF 0%, #2BD2FF 50%, #2BFF88 100%)",
+      "textColor": "#1a1a2e",
+      "boardBg": "rgba(255,255,255,0.25)",
+      "squareBg": "rgba(255,255,255,0.35)",
+      "squareBorder": "rgba(255,255,255,0.5)",
+      "panelBg": "rgba(255,255,255,0.2)",
+      "panelBorder": "rgba(255,255,255,0.4)",
+      "logBg": "rgba(255,255,255,0.15)",
+      "finishGradient": "linear-gradient(135deg, #FA8BFF 0%, #2BD2FF 100%)",
+      "checkpointBg": "rgba(43, 255, 136, 0.3)",
+      "cardBg": "rgba(43, 210, 255, 0.25)",
+      "accentColor": "#FA8BFF",
+      "buttonGradient": "linear-gradient(135deg, #FA8BFF 0%, #2BD2FF 100%)",
+      "buttonHover": "linear-gradient(135deg, #fb9fff 0%, #4dd9ff 100%)"
+    },
+    "sunrise": {
+      "id": "sunrise",
+      "name": "Zonsopgang",
+      "background": "linear-gradient(135deg, #FF6B6B 0%, #FFE66D 50%, #4ECDC4 100%)",
+      "textColor": "#2d3436",
+      "boardBg": "rgba(255,255,255,0.3)",
+      "squareBg": "rgba(255,255,255,0.4)",
+      "squareBorder": "rgba(255,255,255,0.6)",
+      "panelBg": "rgba(255,255,255,0.25)",
+      "panelBorder": "rgba(255,255,255,0.45)",
+      "logBg": "rgba(255,255,255,0.2)",
+      "finishGradient": "linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)",
+      "checkpointBg": "rgba(255, 230, 109, 0.4)",
+      "cardBg": "rgba(78, 205, 196, 0.3)",
+      "accentColor": "#FF6B6B",
+      "buttonGradient": "linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)",
+      "buttonHover": "linear-gradient(135deg, #ff8080 0%, #ffed8a 100%)"
+    },
     "dark": {
       "id": "dark",
-      "name": "Donker (Standaard)",
+      "name": "Donker (Klassiek)",
       "background": "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
       "textColor": "#f0ede8",
       "boardBg": "rgba(255,255,255,0.05)",
@@ -13,7 +67,10 @@
       "logBg": "rgba(0,0,0,0.3)",
       "finishGradient": "linear-gradient(135deg, #f6d365, #fda085)",
       "checkpointBg": "rgba(246, 211, 101, 0.25)",
-      "cardBg": "rgba(129, 230, 217, 0.18)"
+      "cardBg": "rgba(129, 230, 217, 0.18)",
+      "accentColor": "#f6d365",
+      "buttonGradient": "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
+      "buttonHover": "linear-gradient(135deg, #f7dc7a 0%, #fdb09a 100%)"
     },
     "light": {
       "id": "light",
@@ -76,5 +133,5 @@
       "cardBg": "rgba(129, 230, 217, 0.25)"
     }
   },
-  "defaultTheme": "dark"
+  "defaultTheme": "modern"
 }
