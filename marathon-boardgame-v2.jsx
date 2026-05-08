@@ -1,26 +1,55 @@
 import { useState, useEffect, useRef } from "react";
 
-// Import JSON configurations
-import gameConfig from "./config/game-config.json";
-import playersConfig from "./config/players.json";
-import cardsConfig from "./config/cards.json";
-import themesConfig from "./config/themes.json";
+const PLAYERS = [
+  { id: 0, name: "Rood", color: "#E53E3E", bg: "#FED7D7", emoji: "🔴" },
+  { id: 1, name: "Groen", color: "#38A169", bg: "#C6F6D5", emoji: "🟢" },
+  { id: 2, name: "Blauw", color: "#3182CE", bg: "#BEE3F8", emoji: "🔵" },
+  { id: 3, name: "Geel", color: "#D69E2E", bg: "#FEFCBF", emoji: "🟡" },
+];
 
-// Helper functions
-function rollDie(sides = 6) {
-  return Math.floor(Math.random() * sides) + 1;
+const TOTAL_SQUARES = 60;
+
+const CARDS = [
+  { type: "bad", title: "Door je enkel gegaan!", desc: "Sla een beurt over.", effect: { skipTurns: 1 } },
+  { type: "bad", title: "Koorts 37.1°C", desc: "Bouw opnieuw op. Dobbelsteenpunten worden gehalveerd (2 beurten).", effect: { halfDice: 2 } },
+  { type: "bad", title: "Spierpijn dag 2", desc: "Ga 3 vakjes terug.", effect: { move: -3 } },
+  { type: "bad", title: "Regen en storm!", desc: "Training geannuleerd. Sla een beurt over.", effect: { skipTurns: 1 } },
+  { type: "bad", title: "Verkeerd schoeisel", desc: "Blaren! Ga 2 vakjes terug.", effect: { move: -2 } },
+  { type: "bad", title: "Overtraining", desc: "Rust verplicht. Sla 2 beurten over.", effect: { skipTurns: 2 } },
+  { type: "bad", title: "Maagproblemen tijdens de loop", desc: "Terug naar de start van het segment. Ga 5 vakjes terug.", effect: { move: -5 } },
+  { type: "bad", title: "Motivatiedip", desc: "Je mist de training. Dobbelsteenpunten worden gehalveerd (1 beurt).", effect: { halfDice: 1 } },
+  { type: "bad", title: "Kniepijn (IT-band)", desc: "Fysio nodig. Sla 2 beurten over.", effect: { skipTurns: 2 } },
+  { type: "good", title: "Perfect weer!", desc: "Ideale omstandigheden. Beweeg 3 extra vakjes.", effect: { move: 3 } },
+  { type: "good", title: "Runner's high!", desc: "Geweldige training. Gooi de dobbelsteen nog een keer.", effect: { extraRoll: true } },
+  { type: "good", title: "Nieuw persoonlijk record", desc: "Ga 4 vakjes vooruit.", effect: { move: 4 } },
+  { type: "good", title: "Loopmaatje gevonden", desc: "Motivatie door het dak. Gooi de dobbelsteen nog een keer.", effect: { extraRoll: true } },
+  { type: "good", title: "Goed geslapen", desc: "Optimaal herstel. Beweeg 2 extra vakjes.", effect: { move: 2 } },
+  { type: "good", title: "Sportvoeding gesponsord", desc: "Energie boost! Ga 3 vakjes vooruit.", effect: { move: 3 } },
+  { type: "good", title: "Intervaltraining voltooid", desc: "Snelheidswerk loont. Ga 4 vakjes vooruit.", effect: { move: 4 } },
+  { type: "good", title: "Hardloopkamp weekend", desc: "Intensieve training. Ga 5 vakjes vooruit.", effect: { move: 5 } },
+  { type: "good", title: "Community run", desc: "Samen ren je verder. Ga 3 vakjes vooruit.", effect: { move: 3 } },
+  { type: "neutral", title: "Rust is ook training", desc: "Je slaat een training over maar herstelt goed. Niets verandert.", effect: {} },
+  { type: "neutral", title: "Regen maar toch gegaan", desc: "Mentale kracht! Geen bonus maar ook geen straf.", effect: {} },
+];
+
+const SPECIAL_SQUARES = {
+  10: { type: "card", label: "📋" },
+  20: { type: "card", label: "📋" },
+  30: { type: "checkpoint", label: "🏁", title: "Checkpoint!", desc: "+2 vakjes bonus!" },
+  40: { type: "card", label: "📋" },
+  50: { type: "card", label: "📋" },
+  55: { type: "checkpoint", label: "🏁", title: "Laatste push!", desc: "+3 vakjes bonus!" },
+};
+
+function rollDie() {
+  return Math.floor(Math.random() * 6) + 1;
 }
 
-function drawCard(cards) {
-  return cards[Math.floor(Math.random() * cards.length)];
+function drawCard() {
+  return CARDS[Math.floor(Math.random() * CARDS.length)];
 }
 
-function getRandomMessage(messages) {
-  return messages[Math.floor(Math.random() * messages.length)];
-}
-
-// Dice component
-const Dieface = ({ value, rolling, sides = 6 }) => {
+const Dieface = ({ value, rolling }) => {
   const dots = {
     1: [[50, 50]],
     2: [[25, 25], [75, 75]],
@@ -30,7 +59,6 @@ const Dieface = ({ value, rolling, sides = 6 }) => {
     6: [[25, 20], [75, 20], [25, 50], [75, 50], [25, 80], [75, 80]],
   };
   const positions = dots[value] || dots[1];
-  
   return (
     <div style={{
       width: 72, height: 72,
@@ -52,117 +80,22 @@ const Dieface = ({ value, rolling, sides = 6 }) => {
 };
 
 export default function MarathonGame() {
-  // Load configurations
-  const TOTAL_SQUARES = gameConfig.game.totalSquares;
-  const DICE_SIDES = gameConfig.dice.sides;
-  const CARDS = cardsConfig.cards;
-  const CARD_TYPES = cardsConfig.cardTypes;
-  const SPECIAL_SQUARES = {};
-  
-  // Build special squares from config
-  gameConfig.board.specialSquares.cardSquares.forEach(sq => {
-    SPECIAL_SQUARES[sq] = { type: "card", label: "📋" };
-  });
-  gameConfig.board.specialSquares.checkpoints.forEach(cp => {
-    SPECIAL_SQUARES[cp.square] = { 
-      type: "checkpoint", 
-      label: "🏁", 
-      bonus: cp.bonus,
-      title: cp.square === 30 ? "Checkpoint!" : "Laatste push!",
-      desc: `+${cp.bonus} vakjes bonus!`
-    };
-  });
-
-  // State management
-  const [currentTheme, setCurrentTheme] = useState("dark");
-  const [players, setPlayers] = useState(
-    playersConfig.players.map(p => ({ 
-      ...p, 
-      pos: 0, 
-      skipTurns: 0, 
-      halfDice: 0,
-      wins: 0,
-      gamesPlayed: 0
-    }))
-  );
+  const [players, setPlayers] = useState(PLAYERS.map(p => ({ ...p, pos: 0, skipTurns: 0, halfDice: 0 })));
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [diceValue, setDiceValue] = useState(null);
   const [rolling, setRolling] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
-  const [log, setLog] = useState([`🏃 ${gameConfig.game.name} is gestart! ${playersConfig.players[0].name} begint.`]);
-  const [phase, setPhase] = useState("roll"); // roll | card | done | ai-thinking
+  const [log, setLog] = useState(["🏃 Road to the Marathon is gestart! Rood begint."]);
+  const [phase, setPhase] = useState("roll"); // roll | card | done
   const [winner, setWinner] = useState(null);
   const [pendingExtraRoll, setPendingExtraRoll] = useState(false);
-  const [aiThinking, setAiThinking] = useState(false);
-  const [showThemeSelector, setShowThemeSelector] = useState(false);
-  const [showStats, setShowStats] = useState(false);
-  const [gameStats, setGameStats] = useState({
-    totalGames: 0,
-    totalRolls: 0,
-    cardsDrawn: 0,
-    checkpointsReached: 0
-  });
-  
   const logRef = useRef(null);
-  const aiTimeoutRef = useRef(null);
 
-  // Get current theme
-  const theme = themesConfig.themes[currentTheme];
-
-  // Auto-scroll log
   useEffect(() => {
-    if (logRef.current) {
-      logRef.current.scrollTop = logRef.current.scrollHeight;
-    }
+    if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
   }, [log]);
 
-  // AI player logic
-  useEffect(() => {
-    const cp = players[currentPlayer];
-    
-    if (phase === "roll" && !rolling && cp && !cp.isHuman && !winner) {
-      setAiThinking(true);
-      const personality = playersConfig.aiPersonalities[cp.aiDifficulty];
-      const thinkingTime = personality.thinkingTime + Math.random() * 500;
-      
-      // Add thinking message
-      const thinkingMsg = getRandomMessage(personality.messages.thinking);
-      addLog(`💭 ${cp.name}: "${thinkingMsg}"`);
-      
-      aiTimeoutRef.current = setTimeout(() => {
-        setAiThinking(false);
-        handleRoll();
-      }, thinkingTime);
-    }
-
-    return () => {
-      if (aiTimeoutRef.current) {
-        clearTimeout(aiTimeoutRef.current);
-      }
-    };
-  }, [currentPlayer, phase, rolling, winner]);
-
-  // AI card resolution
-  useEffect(() => {
-    const cp = players[currentPlayer];
-    
-    if (phase === "card" && activeCard && cp && !cp.isHuman) {
-      const personality = playersConfig.aiPersonalities[cp.aiDifficulty];
-      const delay = personality.thinkingTime * 0.6;
-      
-      aiTimeoutRef.current = setTimeout(() => {
-        resolveCard();
-      }, delay);
-    }
-
-    return () => {
-      if (aiTimeoutRef.current) {
-        clearTimeout(aiTimeoutRef.current);
-      }
-    };
-  }, [phase, activeCard, currentPlayer]);
-
-  const addLog = (msg) => setLog(prev => [...prev.slice(-49), msg]); // Keep last 50 logs
+  const addLog = (msg) => setLog(prev => [...prev, msg]);
 
   const movePlayer = (pid, steps, newPlayers) => {
     const p = newPlayers[pid];
@@ -175,16 +108,13 @@ export default function MarathonGame() {
     if (rolling || phase !== "roll") return;
     setRolling(true);
 
-    // Update stats
-    setGameStats(prev => ({ ...prev, totalRolls: prev.totalRolls + 1 }));
-
     let rollCount = 0;
     const interval = setInterval(() => {
-      setDiceValue(rollDie(DICE_SIDES));
+      setDiceValue(rollDie());
       rollCount++;
       if (rollCount >= 8) {
         clearInterval(interval);
-        const finalVal = rollDie(DICE_SIDES);
+        const finalVal = rollDie();
         setDiceValue(finalVal);
         setRolling(false);
         processRoll(finalVal);
@@ -220,7 +150,9 @@ export default function MarathonGame() {
     setPlayers(newPlayers);
 
     if (newPos >= TOTAL_SQUARES) {
-      handleWin(p, newPlayers);
+      setWinner(p);
+      addLog(`🏅 ${p.emoji} ${p.name} heeft de MARATHON FINISH bereikt! GEWONNEN!`);
+      setPhase("done");
       return;
     }
 
@@ -228,20 +160,18 @@ export default function MarathonGame() {
     if (special) {
       if (special.type === "card") {
         addLog(`📋 ${p.name} landt op een kaartvakje!`);
-        const card = drawCard(CARDS);
+        const card = drawCard();
         setActiveCard(card);
         setPhase("card");
-        setGameStats(prev => ({ ...prev, cardsDrawn: prev.cardsDrawn + 1 }));
       } else if (special.type === "checkpoint") {
-        const bonus = special.bonus;
+        const bonus = newPos === 30 ? 2 : 3;
         const np2 = newPlayers.map(x => ({ ...x }));
         const finalPos = movePlayer(currentPlayer, bonus, np2);
         setPlayers(np2);
         addLog(`🏁 ${special.title} ${p.name} gaat ${bonus} vakjes vooruit naar ${finalPos}!`);
-        setGameStats(prev => ({ ...prev, checkpointsReached: prev.checkpointsReached + 1 }));
-        
         if (finalPos >= TOTAL_SQUARES) {
-          handleWin(p, np2);
+          setWinner(p);
+          setPhase("done");
         } else {
           nextTurn(np2);
         }
@@ -249,40 +179,6 @@ export default function MarathonGame() {
     } else {
       nextTurn(newPlayers);
     }
-  };
-
-  const handleWin = (player, newPlayers) => {
-    setWinner(player);
-    addLog(`🏅 ${player.emoji} ${player.name} heeft de MARATHON FINISH bereikt! GEWONNEN!`);
-    
-    // Update player stats
-    const updatedPlayers = newPlayers.map(p => ({
-      ...p,
-      gamesPlayed: p.gamesPlayed + 1,
-      wins: p.id === player.id ? p.wins + 1 : p.wins
-    }));
-    setPlayers(updatedPlayers);
-    
-    // Update game stats
-    setGameStats(prev => ({ ...prev, totalGames: prev.totalGames + 1 }));
-    
-    // AI win/lose messages
-    if (!player.isHuman) {
-      const personality = playersConfig.aiPersonalities[player.aiDifficulty];
-      const winMsg = getRandomMessage(personality.messages.win);
-      addLog(`💬 ${player.name}: "${winMsg}"`);
-    }
-    
-    // Losing AI messages
-    updatedPlayers.forEach(p => {
-      if (!p.isHuman && p.id !== player.id) {
-        const personality = playersConfig.aiPersonalities[p.aiDifficulty];
-        const loseMsg = getRandomMessage(personality.messages.lose);
-        addLog(`💬 ${p.name}: "${loseMsg}"`);
-      }
-    });
-    
-    setPhase("done");
   };
 
   const resolveCard = () => {
@@ -298,8 +194,10 @@ export default function MarathonGame() {
       addLog(`${e.move > 0 ? "➡️" : "⬅️"} ${p.name} ${e.move > 0 ? "gaat vooruit" : "gaat terug"} ${Math.abs(e.move)} vakjes → vakje ${np}.`);
       if (np >= TOTAL_SQUARES) {
         setPlayers(newPlayers);
-        handleWin(p, newPlayers);
+        setWinner(p);
         setActiveCard(null);
+        setPhase("done");
+        addLog(`🏅 ${p.emoji} ${p.name} heeft de MARATHON FINISH bereikt! GEWONNEN!`);
         return;
       }
     }
@@ -322,28 +220,27 @@ export default function MarathonGame() {
   };
 
   const nextTurn = (newPlayers) => {
-    const next = (currentPlayer + 1) % players.length;
+    const next = (currentPlayer + 1) % 4;
     setCurrentPlayer(next);
     setPendingExtraRoll(false);
-    addLog(`➡️ ${playersConfig.players[next].name} is aan de beurt.`);
+    addLog(`➡️ ${PLAYERS[next].name} is aan de beurt.`);
     setPhase("roll");
   };
 
   const resetGame = () => {
-    setPlayers(players.map(p => ({ ...p, pos: 0, skipTurns: 0, halfDice: 0 })));
+    setPlayers(PLAYERS.map(p => ({ ...p, pos: 0, skipTurns: 0, halfDice: 0 })));
     setCurrentPlayer(0);
     setDiceValue(null);
     setActiveCard(null);
-    setLog([`🏃 Nieuw spel gestart! ${playersConfig.players[0].name} begint.`]);
+    setLog(["🏃 Nieuw spel gestart! Rood begint."]);
     setPhase("roll");
     setWinner(null);
     setPendingExtraRoll(false);
-    setAiThinking(false);
   };
 
   const cp = players[currentPlayer];
-  const COLS = gameConfig.board.columns;
-  const ROWS = gameConfig.board.rows;
+  const COLS = 10;
+  const ROWS = Math.ceil(TOTAL_SQUARES / COLS);
 
   // Build board squares: snake pattern
   const squares = [];
@@ -361,34 +258,23 @@ export default function MarathonGame() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: theme.background,
+      background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
       fontFamily: "'Georgia', 'Times New Roman', serif",
-      color: theme.textColor,
+      color: "#f0ede8",
       padding: "16px",
-      transition: "all 0.5s ease",
     }}>
       <style>{`
         @keyframes spin { 0%{transform:rotate(0deg) scale(1.1)} 100%{transform:rotate(360deg) scale(1)} }
         @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
         @keyframes slideIn { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
         @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        @keyframes shimmer { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         .card-overlay { animation: slideIn 0.3s ease-out; }
         .pion { animation: bounce 1s ease-in-out infinite; }
-        .thinking { animation: pulse 1.5s ease-in-out infinite; }
-        .fade-in { animation: fadeIn 0.5s ease-out; }
       `}</style>
 
       {/* Header */}
       <div style={{ textAlign: "center", marginBottom: 16 }}>
-        <div style={{ 
-          fontSize: 13, 
-          letterSpacing: 4, 
-          color: theme.textSecondary, 
-          textTransform: "uppercase", 
-          marginBottom: 4 
-        }}>
+        <div style={{ fontSize: 13, letterSpacing: 4, color: "#a0aec0", textTransform: "uppercase", marginBottom: 4 }}>
           Het ultieme hardloopspel
         </div>
         <h1 style={{
@@ -402,128 +288,6 @@ export default function MarathonGame() {
         }}>
           🏃 ROAD TO THE MARATHON 🏆
         </h1>
-        
-        {/* Theme & Stats buttons */}
-        <div style={{ marginTop: 12, display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
-          <button 
-            onClick={() => setShowThemeSelector(!showThemeSelector)}
-            style={{
-              background: theme.buttonBg,
-              border: `1px solid ${theme.panelBorder}`,
-              color: theme.textColor,
-              borderRadius: 8,
-              padding: "6px 12px",
-              fontSize: 11,
-              cursor: "pointer",
-              fontFamily: "inherit",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={e => e.target.style.background = theme.buttonHover}
-            onMouseLeave={e => e.target.style.background = theme.buttonBg}
-          >
-            🎨 Thema
-          </button>
-          <button 
-            onClick={() => setShowStats(!showStats)}
-            style={{
-              background: theme.buttonBg,
-              border: `1px solid ${theme.panelBorder}`,
-              color: theme.textColor,
-              borderRadius: 8,
-              padding: "6px 12px",
-              fontSize: 11,
-              cursor: "pointer",
-              fontFamily: "inherit",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={e => e.target.style.background = theme.buttonHover}
-            onMouseLeave={e => e.target.style.background = theme.buttonBg}
-          >
-            📊 Stats
-          </button>
-        </div>
-
-        {/* Theme Selector */}
-        {showThemeSelector && (
-          <div className="fade-in" style={{
-            marginTop: 12,
-            background: theme.panelBg,
-            border: `1px solid ${theme.panelBorder}`,
-            borderRadius: 12,
-            padding: 12,
-            display: "inline-block",
-          }}>
-            <div style={{ fontSize: 10, opacity: 0.6, marginBottom: 8, textTransform: "uppercase", letterSpacing: 2 }}>
-              Kies een thema
-            </div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
-              {Object.keys(themesConfig.themes).map(themeKey => (
-                <button
-                  key={themeKey}
-                  onClick={() => {
-                    setCurrentTheme(themeKey);
-                    setShowThemeSelector(false);
-                  }}
-                  style={{
-                    background: themesConfig.themes[themeKey].background,
-                    border: currentTheme === themeKey ? "2px solid #f6d365" : "2px solid transparent",
-                    borderRadius: 8,
-                    padding: "8px 12px",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    color: themesConfig.themes[themeKey].textColor,
-                    fontFamily: "inherit",
-                    transition: "all 0.2s",
-                    transform: currentTheme === themeKey ? "scale(1.05)" : "scale(1)",
-                  }}
-                >
-                  {themesConfig.themes[themeKey].name}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Statistics Panel */}
-        {showStats && (
-          <div className="fade-in" style={{
-            marginTop: 12,
-            background: theme.panelBg,
-            border: `1px solid ${theme.panelBorder}`,
-            borderRadius: 12,
-            padding: 12,
-            display: "inline-block",
-            minWidth: 280,
-          }}>
-            <div style={{ fontSize: 10, opacity: 0.6, marginBottom: 8, textTransform: "uppercase", letterSpacing: 2 }}>
-              Statistieken
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, fontSize: 12 }}>
-              <div>🎮 Totaal spellen: <strong>{gameStats.totalGames}</strong></div>
-              <div>🎲 Totaal worpen: <strong>{gameStats.totalRolls}</strong></div>
-              <div>🃏 Kaarten getrokken: <strong>{gameStats.cardsDrawn}</strong></div>
-              <div>🏁 Checkpoints: <strong>{gameStats.checkpointsReached}</strong></div>
-            </div>
-            <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${theme.panelBorder}` }}>
-              <div style={{ fontSize: 10, opacity: 0.6, marginBottom: 6 }}>SPELER STATISTIEKEN</div>
-              {players.map(p => (
-                <div key={p.id} style={{ 
-                  display: "flex", 
-                  justifyContent: "space-between", 
-                  fontSize: 11, 
-                  marginBottom: 4,
-                  padding: "4px 8px",
-                  background: theme.boardBg,
-                  borderRadius: 6,
-                }}>
-                  <span style={{ color: p.color, fontWeight: 600 }}>{p.emoji} {p.name}</span>
-                  <span>{p.wins}/{p.gamesPlayed} {p.isHuman ? "👤" : "🤖"}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
@@ -531,10 +295,10 @@ export default function MarathonGame() {
         {/* Board */}
         <div style={{ flex: "0 0 auto" }}>
           <div style={{
-            background: theme.boardBg,
+            background: "rgba(255,255,255,0.05)",
             borderRadius: 16,
             padding: 10,
-            border: `1px solid ${theme.boardBorder}`,
+            border: "1px solid rgba(255,255,255,0.1)",
           }}>
             {squares.map((row, ri) => (
               <div key={ri} style={{ display: "flex", gap: 2, marginBottom: 2 }}>
@@ -553,24 +317,19 @@ export default function MarathonGame() {
                           : special?.type === "card"
                             ? "rgba(129, 230, 217, 0.18)"
                             : sq === 0
-                              ? theme.squareBg
-                              : theme.squareBg,
+                              ? "rgba(255,255,255,0.05)"
+                              : "rgba(255,255,255,0.07)",
                       borderRadius: 6,
-                      border: isFinish 
-                        ? "2px solid #f6d365" 
-                        : special 
-                          ? `1px solid ${theme.panelBorder}` 
-                          : `1px solid ${theme.boardBorder}`,
+                      border: isFinish ? "2px solid #f6d365" : special ? "1px solid rgba(255,255,255,0.25)" : "1px solid rgba(255,255,255,0.1)",
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
                       position: "relative",
                       fontSize: "clamp(7px, 1.2vw, 10px)",
-                      color: isFinish ? "#1a1a1a" : theme.textSecondary,
+                      color: isFinish ? "#1a1a1a" : "rgba(255,255,255,0.5)",
                       fontWeight: 600,
                       overflow: "hidden",
-                      transition: "all 0.2s",
                     }}>
                       <div style={{ position: "absolute", top: 2, left: 2, fontSize: "0.7em", opacity: 0.6 }}>
                         {isFinish ? "🏆" : special ? special.label : sq}
@@ -582,7 +341,7 @@ export default function MarathonGame() {
                             width: "clamp(10px, 2vw, 14px)",
                             height: "clamp(10px, 2vw, 14px)",
                             borderRadius: "50%",
-                            background: p.background || p.color,
+                            background: p.color,
                             border: `1.5px solid white`,
                             boxShadow: `0 0 6px ${p.color}`,
                           }} />
@@ -593,15 +352,7 @@ export default function MarathonGame() {
                 })}
               </div>
             ))}
-            <div style={{ 
-              display: "flex", 
-              gap: 12, 
-              marginTop: 6, 
-              justifyContent: "center", 
-              fontSize: 10, 
-              opacity: 0.6,
-              color: theme.textSecondary 
-            }}>
+            <div style={{ display: "flex", gap: 12, marginTop: 6, justifyContent: "center", fontSize: 10, opacity: 0.6 }}>
               <span>📋 = kaart</span>
               <span>🏁 = checkpoint</span>
               <span>🏆 = finish</span>
@@ -614,21 +365,12 @@ export default function MarathonGame() {
 
           {/* Players */}
           <div style={{
-            background: theme.panelBg,
+            background: "rgba(255,255,255,0.06)",
             borderRadius: 12,
             padding: 10,
-            border: `1px solid ${theme.panelBorder}`,
+            border: "1px solid rgba(255,255,255,0.1)",
           }}>
-            <div style={{ 
-              fontSize: 11, 
-              letterSpacing: 2, 
-              opacity: 0.5, 
-              marginBottom: 8, 
-              textTransform: "uppercase",
-              color: theme.textSecondary 
-            }}>
-              Spelers
-            </div>
+            <div style={{ fontSize: 11, letterSpacing: 2, opacity: 0.5, marginBottom: 8, textTransform: "uppercase" }}>Spelers</div>
             {players.map((p, i) => (
               <div key={p.id} style={{
                 display: "flex",
@@ -640,23 +382,19 @@ export default function MarathonGame() {
                 background: i === currentPlayer && phase !== "done"
                   ? `linear-gradient(90deg, ${p.color}33, transparent)`
                   : "transparent",
-                border: i === currentPlayer && phase !== "done" 
-                  ? `1px solid ${p.color}66` 
-                  : "1px solid transparent",
+                border: i === currentPlayer && phase !== "done" ? `1px solid ${p.color}66` : "1px solid transparent",
                 transition: "all 0.3s",
               }}>
                 <div style={{
                   width: 14, height: 14, borderRadius: "50%",
-                  background: p.background || p.color,
+                  background: p.color,
                   boxShadow: i === currentPlayer ? `0 0 10px ${p.color}` : "none",
                   flexShrink: 0,
                 }} />
-                <span style={{ fontWeight: 700, fontSize: 13, color: p.color }}>
-                  {p.name} {!p.isHuman && "🤖"}
-                </span>
+                <span style={{ fontWeight: 700, fontSize: 13, color: p.color }}>{p.name}</span>
                 <div style={{ flex: 1 }} />
                 <div style={{
-                  background: theme.buttonBg,
+                  background: "rgba(255,255,255,0.1)",
                   borderRadius: 20,
                   padding: "2px 8px",
                   fontSize: 11,
@@ -672,32 +410,32 @@ export default function MarathonGame() {
 
           {/* Dice & Action */}
           <div style={{
-            background: theme.panelBg,
+            background: "rgba(255,255,255,0.06)",
             borderRadius: 12,
             padding: 14,
-            border: `1px solid ${theme.panelBorder}`,
+            border: "1px solid rgba(255,255,255,0.1)",
             textAlign: "center",
           }}>
             {phase !== "done" ? (
               <>
-                <div style={{ fontSize: 12, opacity: 0.6, marginBottom: 6, color: theme.textSecondary }}>
-                  {pendingExtraRoll ? "🎲 Extra gooi!" : aiThinking ? "🤖 AI denkt na..." : "Beurt van"}{" "}
+                <div style={{ fontSize: 12, opacity: 0.6, marginBottom: 6 }}>
+                  {pendingExtraRoll ? "🎲 Extra gooi!" : "Beurt van"}{" "}
                   <span style={{ color: cp.color, fontWeight: 700 }}>{cp.name}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  {diceValue ? <Dieface value={diceValue} rolling={rolling} sides={DICE_SIDES} /> : (
+                  {diceValue ? <Dieface value={diceValue} rolling={rolling} /> : (
                     <div style={{
                       width: 72, height: 72, borderRadius: 14,
-                      background: theme.buttonBg,
-                      border: `2px dashed ${theme.panelBorder}`,
+                      background: "rgba(255,255,255,0.1)",
+                      border: "2px dashed rgba(255,255,255,0.3)",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontSize: 28,
                     }}>🎲</div>
                   )}
                 </div>
-                {phase === "roll" && cp.isHuman && (
+                {phase === "roll" && (
                   <button onClick={handleRoll} disabled={rolling} style={{
-                    background: rolling ? theme.buttonBg : cp.background || `linear-gradient(135deg, ${cp.color}, ${cp.color}cc)`,
+                    background: rolling ? "rgba(255,255,255,0.1)" : `linear-gradient(135deg, ${cp.color}, ${cp.color}cc)`,
                     color: "white",
                     border: "none",
                     borderRadius: 10,
@@ -713,16 +451,6 @@ export default function MarathonGame() {
                     {rolling ? "Gooien..." : "🎲 Gooi!"}
                   </button>
                 )}
-                {aiThinking && (
-                  <div className="thinking" style={{
-                    fontSize: 11,
-                    opacity: 0.7,
-                    marginTop: 8,
-                    color: theme.textSecondary
-                  }}>
-                    💭 {cp.name} overweegt de beste zet...
-                  </div>
-                )}
               </>
             ) : (
               <div>
@@ -733,9 +461,7 @@ export default function MarathonGame() {
                 }}>
                   {winner?.name} wint!
                 </div>
-                <div style={{ fontSize: 12, opacity: 0.6, marginBottom: 12, color: theme.textSecondary }}>
-                  🎉 De marathon is voltooid!
-                </div>
+                <div style={{ fontSize: 12, opacity: 0.6, marginBottom: 12 }}>🎉 De marathon is voltooid!</div>
                 <button onClick={resetGame} style={{
                   background: "linear-gradient(135deg, #f6d365, #fda085)",
                   color: "#1a1a1a",
@@ -752,22 +478,13 @@ export default function MarathonGame() {
 
           {/* Log */}
           <div style={{
-            background: theme.panelBg,
+            background: "rgba(0,0,0,0.3)",
             borderRadius: 12,
             padding: 10,
-            border: `1px solid ${theme.panelBorder}`,
+            border: "1px solid rgba(255,255,255,0.08)",
             flex: 1,
           }}>
-            <div style={{ 
-              fontSize: 11, 
-              letterSpacing: 2, 
-              opacity: 0.5, 
-              marginBottom: 6, 
-              textTransform: "uppercase",
-              color: theme.textSecondary 
-            }}>
-              Logboek
-            </div>
+            <div style={{ fontSize: 11, letterSpacing: 2, opacity: 0.5, marginBottom: 6, textTransform: "uppercase" }}>Logboek</div>
             <div ref={logRef} style={{
               maxHeight: 180,
               overflowY: "auto",
@@ -778,7 +495,7 @@ export default function MarathonGame() {
               {log.map((l, i) => (
                 <div key={i} style={{
                   padding: "2px 0",
-                  borderBottom: `1px solid ${theme.boardBorder}`,
+                  borderBottom: "1px solid rgba(255,255,255,0.04)",
                   color: i === log.length - 1 ? "#f6d365" : "inherit",
                   fontWeight: i === log.length - 1 ? 600 : 400,
                 }}>
@@ -800,8 +517,12 @@ export default function MarathonGame() {
           padding: 20,
         }}>
           <div className="card-overlay" style={{
-            background: CARD_TYPES[activeCard.type].gradient,
-            border: `2px solid ${CARD_TYPES[activeCard.type].color}`,
+            background: activeCard.type === "bad"
+              ? "linear-gradient(135deg, #2d1515, #4a1a1a)"
+              : activeCard.type === "good"
+                ? "linear-gradient(135deg, #152d15, #1a4a1a)"
+                : "linear-gradient(135deg, #1a1a2d, #1a2d4a)",
+            border: `2px solid ${activeCard.type === "bad" ? "#E53E3E" : activeCard.type === "good" ? "#38A169" : "#3182CE"}`,
             borderRadius: 20,
             padding: "32px 28px",
             maxWidth: 340,
@@ -810,42 +531,37 @@ export default function MarathonGame() {
             boxShadow: `0 20px 60px rgba(0,0,0,0.7)`,
           }}>
             <div style={{ fontSize: 48, marginBottom: 12 }}>
-              {activeCard.emoji}
+              {activeCard.type === "bad" ? "😱" : activeCard.type === "good" ? "🎉" : "😐"}
             </div>
             <div style={{
               fontSize: 10, letterSpacing: 3,
-              color: CARD_TYPES[activeCard.type].color,
+              color: activeCard.type === "bad" ? "#FC8181" : activeCard.type === "good" ? "#68D391" : "#90CDF4",
               textTransform: "uppercase",
               marginBottom: 6,
             }}>
               {activeCard.type === "bad" ? "Tegenvaller" : activeCard.type === "good" ? "Meevaller" : "Neutraal"}
             </div>
             <div style={{ fontSize: 20, fontWeight: 900, marginBottom: 12 }}>{activeCard.title}</div>
-            <div style={{ fontSize: 14, opacity: 0.85, lineHeight: 1.6, marginBottom: 20 }}>
-              {activeCard.description}
-            </div>
-            {cp.isHuman && (
-              <button onClick={resolveCard} style={{
-                background: CARD_TYPES[activeCard.type].gradient,
-                color: "white",
-                border: "none",
-                borderRadius: 10,
-                padding: "12px 32px",
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: "pointer",
-                fontFamily: "inherit",
-                letterSpacing: 1,
-                boxShadow: "0 4px 15px rgba(0,0,0,0.4)",
-              }}>
-                Begrepen →
-              </button>
-            )}
-            {!cp.isHuman && (
-              <div style={{ fontSize: 11, opacity: 0.6, marginTop: 8 }}>
-                AI verwerkt kaart...
-              </div>
-            )}
+            <div style={{ fontSize: 14, opacity: 0.85, lineHeight: 1.6, marginBottom: 20 }}>{activeCard.desc}</div>
+            <button onClick={resolveCard} style={{
+              background: activeCard.type === "bad"
+                ? "linear-gradient(135deg, #E53E3E, #C53030)"
+                : activeCard.type === "good"
+                  ? "linear-gradient(135deg, #38A169, #276749)"
+                  : "linear-gradient(135deg, #3182CE, #2c5282)",
+              color: "white",
+              border: "none",
+              borderRadius: 10,
+              padding: "12px 32px",
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: "inherit",
+              letterSpacing: 1,
+              boxShadow: "0 4px 15px rgba(0,0,0,0.4)",
+            }}>
+              Begrepen →
+            </button>
           </div>
         </div>
       )}
@@ -855,14 +571,13 @@ export default function MarathonGame() {
         <div style={{ textAlign: "center", marginTop: 12 }}>
           <button onClick={resetGame} style={{
             background: "transparent",
-            border: `1px solid ${theme.panelBorder}`,
-            color: theme.textSecondary,
+            border: "1px solid rgba(255,255,255,0.2)",
+            color: "rgba(255,255,255,0.4)",
             borderRadius: 8,
             padding: "5px 14px",
             fontSize: 11,
             cursor: "pointer",
             fontFamily: "inherit",
-            transition: "all 0.2s",
           }}>
             Spel opnieuw starten
           </button>
@@ -871,5 +586,3 @@ export default function MarathonGame() {
     </div>
   );
 }
-
-// Made with Bob
