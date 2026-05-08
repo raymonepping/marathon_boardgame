@@ -10,12 +10,14 @@
     "setup": "npm install && npm run dev"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
-    "vite": "^5.0.8"
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.2"
   },
   "keywords": [
     "game",
@@ -25,6 +27,6 @@
     "ai",
     "multiplayer"
   ],
-  "author": "Your Name",
+  "author": "Raymon Epping",
   "license": "MIT"
 }
