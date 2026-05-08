@@ -62,11 +62,12 @@ export default function MarathonGame() {
   useEffect(() => {
     async function loadConfig() {
       try {
+        const basePath = import.meta.env.BASE_URL || '/';
         const [cardsRes, playersRes, gameRes, themesRes] = await Promise.all([
-          fetch('/config/cards.json'),
-          fetch('/config/players.json'),
-          fetch('/config/game-config.json'),
-          fetch('/config/themes.json')
+          fetch(`${basePath}config/cards.json`),
+          fetch(`${basePath}config/players.json`),
+          fetch(`${basePath}config/game-config.json`),
+          fetch(`${basePath}config/themes.json`)
         ]);
 
         const cardsData = await cardsRes.json();
