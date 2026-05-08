@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 
 const PLAYERS = [
-  { id: 0, name: "Rood", color: "#E53E3E", bg: "#FED7D7", emoji: "🔴" },
-  { id: 1, name: "Groen", color: "#38A169", bg: "#C6F6D5", emoji: "🟢" },
-  { id: 2, name: "Blauw", color: "#3182CE", bg: "#BEE3F8", emoji: "🔵" },
-  { id: 3, name: "Geel", color: "#D69E2E", bg: "#FEFCBF", emoji: "🟡" },
+  { id: 0, name: "Rood", color: "#E53E3E", bg: "#FED7D7", emoji: "🔴", isAI: false },
+  { id: 1, name: "Groen", color: "#38A169", bg: "#C6F6D5", emoji: "🟢", isAI: true, aiDelay: 1500 },
+  { id: 2, name: "Blauw", color: "#3182CE", bg: "#BEE3F8", emoji: "🔵", isAI: true, aiDelay: 1200 },
+  { id: 3, name: "Geel", color: "#D69E2E", bg: "#FEFCBF", emoji: "🟡", isAI: true, aiDelay: 900 },
 ];
 
 const TOTAL_SQUARES = 60;
@@ -93,6 +93,28 @@ export default function MarathonGame() {
 
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
+  // AI player logic
+  useEffect(() => {
+    const cp = players[currentPlayer];
+    if (phase === "roll" && !rolling && cp?.isAI && !winner) {
+      const aiTimeout = setTimeout(() => {
+        handleRoll();
+      }, cp.aiDelay);
+      return () => clearTimeout(aiTimeout);
+    }
+  }, [currentPlayer, phase, rolling, winner]);
+
+  // AI card resolution
+  useEffect(() => {
+    const cp = players[currentPlayer];
+    if (phase === "card" && activeCard && cp?.isAI) {
+      const aiTimeout = setTimeout(() => {
+        resolveCard();
+      }, cp.aiDelay * 0.6);
+      return () => clearTimeout(aiTimeout);
+    }
+  }, [phase, activeCard, currentPlayer]);
+
   }, [log]);
 
   const addLog = (msg) => setLog(prev => [...prev, msg]);
