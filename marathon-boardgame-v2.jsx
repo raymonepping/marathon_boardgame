@@ -1,45 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import cardsConfig from '@config/cards.json';
-import playersConfig from '@config/players.json';
-import gameConfig from '@config/game-config.json';
-import themesConfig from '@config/themes.json';
 
-// Load from config files
-const PLAYERS = playersConfig.players.map(p => ({
-  id: p.id,
-  name: p.name,
-  color: p.color,
-  bg: p.bg,
-  emoji: p.emoji,
-  isAI: !p.isHuman,
-  aiDelay: p.isHuman ? 0 : (p.aiDifficulty === 'easy' ? 1500 : p.aiDifficulty === 'medium' ? 1200 : 900)
-}));
-
-const TOTAL_SQUARES = gameConfig.game.totalSquares;
-
-const CARDS = cardsConfig.cards.map(c => ({
-  type: c.type,
-  title: c.title,
-  desc: c.description,
-  emoji: c.emoji,
-  effect: c.effect
-}));
-
-const SPECIAL_SQUARES = Object.fromEntries(
-  Object.entries(gameConfig.board.specialSquares).map(([key, val]) => [
-    key,
-    {
-      type: val.type,
-      label: val.label,
-      title: val.title,
-      desc: val.description,
-      bonus: val.bonus
-    }
-  ])
-);
-
-// Get theme
-const currentTheme = themesConfig.themes[themesConfig.defaultTheme];
+// These will be loaded at runtime
+let PLAYERS = [];
+let TOTAL_SQUARES = 42;
+let CARDS = [];
+let SPECIAL_SQUARES = {};
+let currentTheme = null;
 
 function rollDie() {
   return Math.floor(Math.random() * 6) + 1;
@@ -80,7 +46,8 @@ const Dieface = ({ value, rolling }) => {
 };
 
 export default function MarathonGame() {
-  const [players, setPlayers] = useState(PLAYERS.map(p => ({ ...p, pos: 0, skipTurns: 0, halfDice: 0 })));
+  const [configLoaded, setConfigLoaded] = useState(false);
+  const [players, setPlayers] = useState([]);
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [diceValue, setDiceValue] = useState(null);
   const [rolling, setRolling] = useState(false);
@@ -90,6 +57,68 @@ export default function MarathonGame() {
   const [winner, setWinner] = useState(null);
   const [pendingExtraRoll, setPendingExtraRoll] = useState(false);
   const logRef = useRef(null);
+
+  // Load config files on mount
+  useEffect(() => {
+    async function loadConfig() {
+      try {
+        const [cardsRes, playersRes, gameRes, themesRes] = await Promise.all([
+          fetch('/config/cards.json'),
+          fetch('/config/players.json'),
+          fetch('/config/game-config.json'),
+          fetch('/config/themes.json')
+        ]);
+
+        const cardsData = await cardsRes.json();
+        const playersData = await playersRes.json();
+        const gameData = await gameRes.json();
+        const themesData = await themesRes.json();
+
+        // Set global variables
+        PLAYERS = playersData.players.map(p => ({
+          id: p.id,
+          name: p.name,
+          color: p.color,
+          bg: p.bg,
+          emoji: p.emoji,
+          isAI: !p.isHuman,
+          aiDelay: p.isHuman ? 0 : (p.aiDifficulty === 'easy' ? 1500 : p.aiDifficulty === 'medium' ? 1200 : 900)
+        }));
+
+        TOTAL_SQUARES = gameData.game.totalSquares;
+
+        CARDS = cardsData.cards.map(c => ({
+          type: c.type,
+          title: c.title,
+          desc: c.description,
+          emoji: c.emoji,
+          effect: c.effect
+        }));
+
+        SPECIAL_SQUARES = Object.fromEntries(
+          Object.entries(gameData.board.specialSquares).map(([key, val]) => [
+            key,
+            {
+              type: val.type,
+              label: val.label,
+              title: val.title,
+              desc: val.description,
+              bonus: val.bonus
+            }
+          ])
+        );
+
+        currentTheme = themesData.themes[themesData.defaultTheme];
+
+        // Initialize players
+        setPlayers(PLAYERS.map(p => ({ ...p, pos: 0, skipTurns: 0, halfDice: 0 })));
+        setConfigLoaded(true);
+      } catch (error) {
+        console.error('Failed to load config:', error);
+      }
+    }
+    loadConfig();
+  }, []);
 
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
@@ -260,6 +289,26 @@ export default function MarathonGame() {
     setPendingExtraRoll(false);
   };
 
+  // Show loading screen while config is loading
+  if (!configLoaded) {
+    return (
+      <div style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "'Inter', 'Segoe UI', 'Roboto', sans-serif",
+        color: "#ffffff",
+      }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: "48px", marginBottom: "20px" }}>🏃</div>
+          <div style={{ fontSize: "24px", fontWeight: "600" }}>Loading Marathon Game...</div>
+        </div>
+      </div>
+    );
+  }
+
   const cp = players[currentPlayer];
   const COLS = 10;
   const ROWS = Math.ceil(TOTAL_SQUARES / COLS);
@@ -311,11 +360,9 @@ export default function MarathonGame() {
           fontSize: "clamp(28px, 6vw, 48px)",
           fontWeight: 900,
           margin: 0,
-          background: currentTheme.finishGradient,
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
+          color: "#ffffff",
           letterSpacing: 1,
-          textShadow: "0 2px 20px rgba(0,0,0,0.1)"
+          textShadow: "0 2px 20px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2)"
         }}>
           🏃 ROAD TO THE MARATHON 🏆
         </h1>
@@ -370,7 +417,16 @@ export default function MarathonGame() {
                       transition: "all 0.2s ease",
                       boxShadow: isFinish ? `0 0 20px ${currentTheme.accentColor}40` : "none",
                     }}>
-                      <div style={{ position: "absolute", top: 2, left: 2, fontSize: "0.7em", opacity: 0.6 }}>
+                      <div style={{
+                        position: "absolute",
+                        top: 2,
+                        left: 2,
+                        fontSize: isFinish ? "1.2em" : special ? "1em" : "1em",
+                        fontWeight: 700,
+                        opacity: isFinish ? 1 : special ? 0.9 : 0.8,
+                        color: "#ffffff",
+                        textShadow: "0 1px 3px rgba(0,0,0,0.5)"
+                      }}>
                         {isFinish ? "🏆" : special ? special.label : sq}
                       </div>
                       {/* Player tokens */}

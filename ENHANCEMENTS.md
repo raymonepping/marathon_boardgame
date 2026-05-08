@@ -70,20 +70,29 @@ Based on chat analysis, potential future additions could include:
 
 ### Theme System Improvements
 
-Added **3 new modern themes** with vibrant, appealing color schemes:
+Added **Rotterdam Marathon branded theme** as the default, inspired by the official NN Marathon Rotterdam branding:
 
-#### New Themes:
-1. **Modern (Default)** - Purple/pink gradient theme
+#### Featured Theme:
+1. **NN Marathon Rotterdam (Default)** - Official brand colors
+   - Background: Vibrant orange-to-purple gradient (#FF6B35 → #FF4757 → #C44569 → #8B3A8B → #6C3483)
+   - Matches the iconic Rotterdam Marathon finish line and promotional materials
+   - Accent color: Coral orange (#FF6B35)
+   - Button gradient: Full spectrum from orange through magenta to purple
+   - Inspired by the actual marathon branding visible on finish line banners and promotional posters
+   - Colors extracted from official NN Marathon Rotterdam imagery
+
+#### Additional Modern Themes:
+2. **Modern** - Purple/pink gradient theme
    - Background: Purple to pink gradient (#667eea → #764ba2 → #f093fb)
    - Bright, contemporary look with excellent contrast
    - Accent color: Pink (#f093fb)
 
-2. **Vibrant** - Rainbow gradient theme
+3. **Vibrant** - Rainbow gradient theme
    - Background: Pink to cyan to green (#FA8BFF → #2BD2FF → #2BFF88)
    - High energy, playful aesthetic
    - Perfect for an exciting gaming experience
 
-3. **Sunrise** - Warm colors theme
+4. **Sunrise** - Warm colors theme
    - Background: Red to yellow to teal (#FF6B6B → #FFE66D → #4ECDC4)
    - Warm, inviting color palette
    - Great for morning gaming sessions
@@ -95,15 +104,25 @@ Added **3 new modern themes** with vibrant, appealing color schemes:
 - Classic themes (Dark, Light, Ocean, Forest, Sunset) remain available
 
 ### Visual Improvements:
-- **Default theme changed** from "dark" to "modern" for better first impression
-- **Brighter colors** throughout for more engaging experience
+- **Default theme** set to "rotterdam" for authentic marathon branding
+- **Brand-accurate colors** matching official NN Marathon Rotterdam materials
+- **Vibrant gradient** from coral/orange through magenta to deep purple
 - **Better contrast** between UI elements
 - **Modern gradients** for buttons and interactive elements
 - **Consistent styling** across all themes
+- **Professional appearance** matching real marathon event branding
+
+### Rotterdam Marathon Branding Details:
+- **Primary gradient**: Orange (#FF6B35) → Red (#FF4757) → Magenta (#C44569) → Purple (#8B3A8B) → Deep Purple (#6C3483)
+- **Finish line colors**: Matches the iconic orange-to-purple gradient seen on finish line structures
+- **Promotional materials**: Aligned with official marathon posters and banners
+- **Brand recognition**: Instantly recognizable to Rotterdam Marathon participants
 
 ### Impact:
+- Authentic marathon experience with official branding
 - More appealing and modern look
-- Better user engagement
+- Better user engagement through familiar colors
 - Improved accessibility with better contrast
 - Professional, polished appearance
+- Strong connection to the actual Rotterdam Marathon event
 - Maintains all existing functionality while enhancing visual appeal
