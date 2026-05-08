@@ -65,3 +65,45 @@ Based on chat analysis, potential future additions could include:
 - Emojis selected to visually represent each card type
 - Card IDs follow existing numbering convention
 - Effects align with existing game mechanics
+
+## Visual & UX Enhancements (2026-05-08)
+
+### Theme System Improvements
+
+Added **3 new modern themes** with vibrant, appealing color schemes:
+
+#### New Themes:
+1. **Modern (Default)** - Purple/pink gradient theme
+   - Background: Purple to pink gradient (#667eea → #764ba2 → #f093fb)
+   - Bright, contemporary look with excellent contrast
+   - Accent color: Pink (#f093fb)
+
+2. **Vibrant** - Rainbow gradient theme
+   - Background: Pink to cyan to green (#FA8BFF → #2BD2FF → #2BFF88)
+   - High energy, playful aesthetic
+   - Perfect for an exciting gaming experience
+
+3. **Sunrise** - Warm colors theme
+   - Background: Red to yellow to teal (#FF6B6B → #FFE66D → #4ECDC4)
+   - Warm, inviting color palette
+   - Great for morning gaming sessions
+
+#### Enhanced Existing Themes:
+- All themes now include `accentColor`, `buttonGradient`, and `buttonHover` properties
+- Improved contrast and readability
+- Better visual hierarchy with enhanced opacity values
+- Classic themes (Dark, Light, Ocean, Forest, Sunset) remain available
+
+### Visual Improvements:
+- **Default theme changed** from "dark" to "modern" for better first impression
+- **Brighter colors** throughout for more engaging experience
+- **Better contrast** between UI elements
+- **Modern gradients** for buttons and interactive elements
+- **Consistent styling** across all themes
+
+### Impact:
+- More appealing and modern look
+- Better user engagement
+- Improved accessibility with better contrast
+- Professional, polished appearance
+- Maintains all existing functionality while enhancing visual appeal
